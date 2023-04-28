@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('./partials/head') %>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-2"><%- include('./partials/sidebar') %></div>
+        <div class="col-sm-10">
+          <h1>Category: <%= category.name %></h1>
+          <div style="margin-left: 20px; margin-top: 20px">
+            <h4>Items</h4>
+            <dl>
+              <% category_item.forEach((item) => { %>
+              <dt><%= item.name %></dt>
+              <dd><%= item.description %></dd>
+              <% }) %>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
