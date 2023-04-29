@@ -1,3 +1,5 @@
+const { body, validationResult } = require("express-validator");
+
 const categories = [
   {
     id: 1,
@@ -46,3 +48,40 @@ exports.category_detail = (req, res) => {
     category_item: itemByCategory,
   });
 };
+
+exports.category_create_get = (req, res) => {
+  res.render("category_form", {
+    title: "Create Category",
+  });
+};
+
+exports.category_create_post = [
+  body("name", "Category name required").isLength({ min: 1 }).escape(),
+  body("description", "Category description required")
+    .isLength({ min: 1 })
+    .escape(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    const name = req.body.name;
+    const description = req.body.description;
+
+    console.log(name, description);
+    console.log(errors);
+
+    if (!errors.isEmpty()) {
+      res.render("category_form", {
+        title: "Create Category",
+        errors: errors.array(),
+      });
+    } else {
+      categories.push({
+        id: categories.length + 1,
+        name,
+        description,
+      });
+      console.log(categories);
+      res.redirect("/inventory/category");
+    }
+  },
+];
