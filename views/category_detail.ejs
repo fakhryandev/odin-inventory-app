@@ -9,15 +9,26 @@
         <div class="col-sm-2"><%- include('./partials/sidebar') %></div>
         <div class="col-sm-10">
           <h1>Category: <%= category.name %></h1>
+          <p><%= category.description %></p>
           <div style="margin-left: 20px; margin-top: 20px">
             <h4>Items</h4>
             <dl>
-              <% category_item.forEach((item) => { %>
+              <% if(category_item.length ) { category_item.forEach((item) => {
+              %>
               <dt><%= item.name %></dt>
               <dd><%= item.description %></dd>
-              <% }) %>
+              <% }) } else { %>
+              <p>This category has no items</p>
+              <% } %>
             </dl>
           </div>
+          <hr />
+          <p>
+            <a href="<%= category.url %>/delete">Delete Category</a>
+          </p>
+          <p>
+            <a href="<%= category.url %>/update">Update Category</a>
+          </p>
         </div>
       </div>
     </div>

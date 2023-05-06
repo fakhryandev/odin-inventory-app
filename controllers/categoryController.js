@@ -1,57 +1,41 @@
 const { body, validationResult } = require("express-validator");
+const Category = require("../models/category");
+const Item = require("../models/item");
 
-const categories = [
-  {
-    id: 1,
-    name: "Makanan",
-    description: "Kumpulan makanan dengan gizi tinggi",
-  },
-  {
-    id: 2,
-    name: "Alat Masak",
-    description: "Kumpulan alat masak dengan kualitas terbaik",
-  },
-];
+exports.category_list = async (req, res, next) => {
+  try {
+    const categories = await Category.find().sort([["name", "ascending"]]);
 
-const items = [
-  {
-    name: "Bakso",
-    description: "Cita rasa bakso malang dengan daging sapi pilihan",
-    category: 1,
-    price: 20,
-    stock: 5,
-  },
-  {
-    name: "Wajan",
-    description: "Berbahan stainless steel kelas eropa",
-    category: 2,
-    price: 30,
-    stock: 10,
-  },
-];
-
-exports.category_list = (req, res, next) => {
-  res.render("category_list", {
-    title: "Category List",
-    category_list: categories,
-  });
+    res.render("category_list", {
+      title: "Category List",
+      category_list: categories,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-exports.category_detail = (req, res) => {
-  const id = req.params.id;
-  const category = categories.find((x) => x.id == id);
-  const itemByCategory = items.filter((x) => x.category == id);
+exports.category_detail = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const category = await Category.findById(id);
+    const itemByCategory = await Item.find({ category: id });
 
-  res.render("category_detail", {
-    title: "Category Detail",
-    category,
-    category_item: itemByCategory,
-  });
+    res.render("category_detail", {
+      title: "Category Detail",
+      category,
+      category_item: itemByCategory,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.category_create_get = (req, res) => {
   res.render("category_form", {
     title: "Create Category",
+    errors: false,
+    category: undefined,
   });
 };
 
@@ -60,28 +44,91 @@ exports.category_create_post = [
   body("description", "Category description required")
     .isLength({ min: 1 })
     .escape(),
-  (req, res, next) => {
-    const errors = validationResult(req);
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
 
-    const name = req.body.name;
-    const description = req.body.description;
+      const name = req.body.name;
+      const description = req.body.description;
 
-    console.log(name, description);
-    console.log(errors);
+      if (!errors.isEmpty()) {
+        res.render("category_form", {
+          title: "Create Category",
+          errors: errors.array(),
+        });
+      } else {
+        const foundCategory = await Category.findOne({ name });
 
-    if (!errors.isEmpty()) {
-      res.render("category_form", {
-        title: "Create Category",
-        errors: errors.array(),
-      });
-    } else {
-      categories.push({
-        id: categories.length + 1,
+        if (foundCategory) {
+          res.redirect(foundCategory.url);
+        } else {
+          const newCategory = new Category({
+            name,
+            description,
+          });
+
+          await newCategory.save();
+
+          res.redirect("/inventory/category");
+        }
+      }
+    } catch (error) {
+      next(error);
+    }
+  },
+];
+
+exports.category_update_get = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const category = await Category.findById(id);
+
+    res.render("category_form", {
+      category,
+      title: "Update Category",
+      errors: false,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.category_update_post = [
+  body("name", "Category name required").isLength({ min: 1 }).escape(),
+  body("description", "Category description required")
+    .isLength({ min: 1 })
+    .escape(),
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+
+      const name = req.body.name;
+      const description = req.body.description;
+
+      if (!errors.isEmpty()) {
+        return res.render("category_form", {
+          title: "Create Category",
+          errors: errors.array(),
+          category: {
+            name,
+            description,
+          },
+        });
+      }
+
+      const id = req.params.id;
+
+      const category = new Category({
+        _id: id,
         name,
         description,
       });
-      console.log(categories);
-      res.redirect("/inventory/category");
+
+      const theCategory = await Category.findByIdAndUpdate(id, category);
+
+      res.redirect(theCategory.url);
+    } catch (error) {
+      next(error);
     }
   },
 ];

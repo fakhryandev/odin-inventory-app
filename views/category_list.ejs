@@ -9,11 +9,17 @@
         <div class="col-sm-2"><%- include('./partials/sidebar') %></div>
         <div class="col-sm-10">
           <h1><%= title %></h1>
+          <% if(!category_list.length){ %>
+          <p>There are no categories</p>
+          <% } else { %>
           <ul>
             <% category_list.forEach((item) => { %>
-            <li><%= item.name %></li>
+            <li>
+              <a href="<%= item.url %>"> <%= item.name %> </a>
+            </li>
             <% }) %>
           </ul>
+          <% } %>
         </div>
       </div>
     </div>
