@@ -1,14 +1,26 @@
-const categories = ["Makanan", "Alat Masak"];
-const items = ["Bakso", "Spatula", "Wajan"];
+const Item = require("../models/item");
+const Category = require("../models/category");
 
-exports.index = (req, res) => {
-  res.render("index", {
-    title: "My Inventory Home",
-    data: {
-      categories,
-      items,
-    },
-  });
+exports.index = async (req, res) => {
+  try {
+    const itemCount = await Item.countDocuments();
+    const categoryCount = await Category.countDocuments();
+
+    const results = {
+      itemCount,
+      categoryCount,
+    };
+
+    res.render("index", {
+      title: "My Inventory Home",
+      data: results,
+    });
+  } catch (error) {
+    res.render("index", {
+      title: "My Inventory Home",
+      error,
+    });
+  }
 };
 
 exports.item_list = (req, res, next) => {
