@@ -55,6 +55,7 @@ exports.category_create_post = [
         res.render("category_form", {
           title: "Create Category",
           errors: errors.array(),
+          category: undefined,
         });
       } else {
         const foundCategory = await Category.findOne({ name });
