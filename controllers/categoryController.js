@@ -132,3 +132,46 @@ exports.category_update_post = [
     }
   },
 ];
+
+exports.category_delete_get = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const category = await Category.findById(id);
+    const categoryItems = await Item.find({ category: id });
+
+    if (!category) {
+      res.redirect("/inventory/category");
+    }
+
+    res.render("category_delete", {
+      title: "Delete Category",
+      category,
+      categoryItems,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.category_delete_post = async (req, res, next) => {
+  try {
+    const id = req.body.categoryid;
+
+    const category = await Category.findById(id);
+    const categoryItems = await Item.find({ category: id });
+
+    if (categoryItems.length > 0) {
+      return res.render("genre_delete", {
+        title: "Delete Category",
+        category,
+        categoryItems,
+      });
+    }
+
+    await Category.findByIdAndRemove(id);
+
+    res.redirect("/inventory/category");
+  } catch (error) {
+    next(error);
+  }
+};
