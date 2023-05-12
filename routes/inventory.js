@@ -5,6 +5,7 @@ const categoryController = require("../controllers/categoryController");
 
 router.get("/", itemController.index);
 router.get("/item", itemController.item_list);
+router.get("/item/create", itemController.item_create_get);
 
 router.get("/category", categoryController.category_list);
 router.get("/category/create", categoryController.category_create_get);
