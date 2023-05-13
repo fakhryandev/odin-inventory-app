@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head') %>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-2"><%- include('./partials/sidebar') %></div>
+        <div class="col-sm-10">
+          <h1>Item: <%= item.name %></h1>
+          <p>Do you really want to delete this Item ?</p>
+          <form action="" method="post">
+            <div class="form-group">
+              <input
+                type="hidden"
+                class="form-control"
+                name="itemid"
+                id="itemid"
+                required
+                value="<%= item._id %>"
+              />
+            </div>
+            <button class="btn btn-primary">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

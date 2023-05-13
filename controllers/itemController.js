@@ -91,3 +91,33 @@ exports.item_create_post = [
     }
   },
 ];
+
+exports.item_delete_get = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const item = await Item.findById(id);
+
+    if (!item) {
+      res.redirect("inventory/item");
+    }
+
+    res.render("item_delete", {
+      title: "Delete Item",
+      item,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.item_delete_post = async (req, res, next) => {
+  try {
+    const id = req.body.itemid;
+
+    await Item.findByIdAndRemove(id);
+
+    res.redirect("/inventory/item");
+  } catch (error) {
+    next(error);
+  }
+};
