@@ -50,7 +50,7 @@
                 class="form-control"
                 name="stock"
                 id="stock"
-                value="<% item === undefined ? '' : item.stock %>"
+                value="0"
               />
             </div>
 
@@ -61,7 +61,8 @@
                 class="form-control"
                 name="price"
                 id="price"
-                value="<% item === undefined ? '' : item.price %>"
+                value="0"
+                min="0"
               />
             </div>
             <button class="btn btn-primary">Submit</button>

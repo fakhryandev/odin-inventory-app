@@ -12,11 +12,10 @@
           <% if(!itemList.length) { %>
           <p>There are no items</p>
           <% } else { %>
-
           <ul>
             <% itemList.forEach((item) => { %>
             <li>
-              <a href="<%= item.url %>"> <%= item %> </a>
+              <a href="<%= item.url %>"> <%= item.name %> </a>
             </li>
             <% }) %>
           </ul>

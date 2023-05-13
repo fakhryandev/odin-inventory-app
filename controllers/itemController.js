@@ -44,6 +44,20 @@ exports.item_create_get = async (req, res) => {
   });
 };
 
+exports.item_detail = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const item = await Item.findById(id).populate("category");
+
+    res.render("item_detail", {
+      title: "Item Detail",
+      item,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.item_create_post = [
   body("name", "Item name required").isLength({ min: 1 }).escape(),
   body("description", "Item description required")

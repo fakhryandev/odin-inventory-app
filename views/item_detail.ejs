@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head') %>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-2"><%- include('./partials/sidebar') %></div>
+        <div class="col-sm-10">
+          <h1>Item: <%= item.name %></h1>
+          <div class="card">
+            <div class="card-body">
+              <p>
+                Category :
+                <a href="<%= item.category.url %>">
+                  <%= item.category.name %>
+                </a>
+              </p>
+              <p>Description : <%= item.description %></p>
+              <p>Stock : <%= item.stock %></p>
+              <p>Price : <%= item.price %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

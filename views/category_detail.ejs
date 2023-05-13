@@ -15,7 +15,9 @@
             <dl>
               <% if(category_item.length ) { category_item.forEach((item) => {
               %>
-              <dt><%= item.name %></dt>
+              <dt>
+                <a href="<%= item.url %>"> <%= item.name %> </a>
+              </dt>
               <dd><%= item.description %></dd>
               <% }) } else { %>
               <p>This category has no items</p>
