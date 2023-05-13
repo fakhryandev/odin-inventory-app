@@ -63,14 +63,28 @@ exports.item_create_post = [
   body("description", "Item description required")
     .isLength({ min: 1 })
     .escape(),
+  body("category", "Item category required").isLength({ min: 1 }).escape(),
+  body("stock", "Item stock required").isLength({ min: 1 }).escape(),
+  body("price", "Item price required").isLength({ min: 1 }).escape(),
   async (req, res, next) => {
     const errors = validationResult(req);
 
     const { name, description, category, stock, price } = req.body;
 
     if (!errors.isEmpty()) {
+      const categories = await Category.find();
+
       return res.render("item_form", {
         title: "Create Item",
+        errors: errors.array(),
+        categories,
+        item: {
+          name,
+          description,
+          category,
+          stock,
+          price,
+        },
       });
     }
 
@@ -121,3 +135,68 @@ exports.item_delete_post = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.item_update_get = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const item = await Item.findById(id);
+    const categories = await Category.find();
+
+    res.render("item_form", {
+      title: "Update Item",
+      errors: false,
+      item,
+      categories,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.item_update_post = [
+  body("name", "Item name required").isLength({ min: 1 }).escape(),
+  body("description", "Item description required")
+    .isLength({ min: 1 })
+    .escape(),
+  body("category", "Item category required").isLength({ min: 1 }).escape(),
+  body("stock", "Item stock required").isLength({ min: 1 }).escape(),
+  body("price", "Item price required").isLength({ min: 1 }).escape(),
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+
+      const { name, description, category, stock, price } = req.body;
+
+      if (!errors.isEmpty()) {
+        const id = req.params.id;
+
+        const item = await Item.findById(id);
+        const categories = await Category.find();
+
+        return res.render("item_form", {
+          title: "Update Item",
+          errors: errors.array(),
+          categories,
+          item,
+        });
+      }
+
+      const id = req.params.id;
+
+      const item = new Item({
+        _id: id,
+        name,
+        description,
+        category,
+        stock,
+        price,
+      });
+
+      const theItem = await Item.findByIdAndUpdate(id, item);
+
+      res.redirect(theItem.url);
+    } catch (error) {
+      next(error);
+    }
+  },
+];
